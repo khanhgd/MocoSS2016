@@ -1,2 +1,2 @@
 # MocoSS2016
-#MocoPracticalAssignment, Group: Duy Khanh, Delcy
+MocoPracticalAssignment, Group: Duy Khanh, Delcy
