@@ -1,0 +1,6 @@
+#task6
+> lq<-read.table("lq.dat", head=TRUE)
+> data.102<-lq[lq$ip=="192.168.2.102" & lq$neighbor=="192.168.2.108",c(1,2,4)]
+> data.103<-lq[lq$ip=="192.168.2.103" & lq$neighbor=="192.168.2.108",c(1,2,4)]
+> hist(data.103$lq, main ="192.168.2.103", xlab="Link quality")
+> hist(data.102$lq, main ="192.168.2.102", xlab="Link quality")
