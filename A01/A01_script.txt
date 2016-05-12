@@ -1,0 +1,71 @@
+library(scales)
+
+nodePairLqVsTime<-function(ip,neighbor){
+	nodePair<-subset(lq[lq[,1]==ip & lq[,2]==neighbor,])
+	plot(nodePair[,3:4], cex = 0.8,main=paste(ip,neighbor,sep=" - "),type="l")
+	abline(h=median(nodePair[,4]), col="#CD3333", lwd=3)
+	abline(h=mean(nodePair[,4]), col="#7AC5CD", lwd=3)
+	abline(h=quantile(nodePair[,4],probs = c(0.1, 0.8, 0.9, 1)), col="#66CD00")	
+	par(mar=c(0, 0, 0, 0))	
+	legend("topright", inset=c(-0.2,-0.1), c("Median","Mean","Quantils"), xpd = TRUE, lty=c(1,1,1),lwd=c(2,2,2),col=c("#CD3333","#7AC5CD","#66CD00"), bty = "n",cex = 0.75)
+}
+nodeLqVsTime<-function(ip){
+	colors=c("#e60047","#E69F00","#00e69f", "#0047e6","#9f00e6","#00bae6","#e62c00","#bae600","#ffff00")
+	nodes=c("192.168.2.101","192.168.2.102","192.168.2.103","192.168.2.105","192.168.2.106","192.168.2.107","192.168.2.108","192.168.2.109","192.168.2.110")
+	for(i in 1:length(nodes)){
+		if(nodes[i]!=ip){
+			nodePair<-subset(lq[lq[,1]==ip & lq[,2]==nodes[i],])
+			if(nrow(nodePair)!=0){
+				plot(nodePair[,3:4],col=alpha(colors[i],0.6),type="l", axes=FALSE,lty="dotted",ann=FALSE)
+				abline(h=median(nodePair[,4]), col=alpha(colors[i],0.6), lwd=1.5)
+				abline(h=mean(nodePair[,4]), col=alpha(colors[i],0.6), lwd=1.5,lty="dashed")
+				abline(h=quantile(nodePair[,4],probs = c(0.1, 0.8, 0.9, 1)), col=alpha(colors[i],0.6), lwd=0.5, lty="dotted")
+				par(new=TRUE)
+			}
+		}
+	}
+	title(main=ip,col.main="#484848")
+	axis(1, col = "grey", col.ticks="grey", col.axis="grey")
+	axis(2, col = "grey", col.ticks="grey", col.axis="grey")	
+}
+taskOne<-function(){
+	colors=c("#e60047","#E69F00","#00e69f", "#0047e6","#9f00e6","#00bae6","#e62c00","#bae600","#ffff00")
+	nodes=c("192.168.2.101","192.168.2.102","192.168.2.103","192.168.2.105","192.168.2.106","192.168.2.107","192.168.2.108","192.168.2.109","192.168.2.110")
+	windows()
+	#pdf("task1.pdf", paper="letter")
+	par(mfrow = c( 3, 3 ),oma=c(18,3, 4, 2),mar=c(2, 2, 2, 0))
+	for(i in 1:length(nodes)){
+		nodeLqVsTime(nodes[i])
+	}
+	title(main="Link Quality vs Time",outer=T,line=1,xlab="Timestamp", ylab="Link Quality",cex.main=2,col.main="#3e3e3e")
+	par(fig = c(0, 1, 0, 1), oma = c(0, 0, 5, 2), mar = c(0, 0, 0, 0), new = TRUE)
+	plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+	legend("bottom", nodes, xpd = TRUE, inset = c(0, 0.1), bty = "n", lty=c(1,1,1),lwd=c(2,2,2), col=colors, text.col="#484848")
+	legend("bottom", c("Median","Mean","Quantils"), xpd = TRUE, inset = c(0, 0.05), bty = "n", lty=c("solid","dashed","dotted"),lwd=c(2,2,2), col=colors[1], text.col="#484848", horiz=TRUE)
+	#dev.off()
+}
+taskFive<-function(){
+	windows()
+	par( mfrow = c( 1, 2 ) )
+	boxplot(subset(lq[lq[,1]=="192.168.2.101" & lq[,2]=="192.168.2.102",])[,4], main="192.168.2.101-192.168.2.102", ylab="lq")
+	nodePairLqVsTime("192.168.2.101", "192.168.2.102")
+	mtext("", outer = TRUE )
+	windows()
+	par( mfrow = c( 1, 2 ) )
+	boxplot(subset(lq[lq[,1]=="192.168.2.102" & lq[,2]=="192.168.2.108",])[,4], main="192.168.2.102-192.168.2.108", ylab="lq")
+	nodePairLqVsTime("192.168.2.102", "192.168.2.108")
+	mtext("", outer = TRUE )
+	windows()
+	par( mfrow = c( 1, 2 ) )
+	boxplot(subset(lq[lq[,1]=="192.168.2.107" & lq[,2]=="192.168.2.110",])[,4], main="192.168.2.107 - 192.168.2.110", ylab="lq")
+	nodePairLqVsTime("192.168.2.107", "192.168.2.110")
+	mtext("", outer = TRUE )
+}
+taskSix<-function(){
+	data.102<-lq[lq$ip=="192.168.2.102" & lq$neighbor=="192.168.2.108",]
+	data.103<-lq[lq$ip=="192.168.2.103" & lq$neighbor=="192.168.2.108",]
+	windows()
+	hist(data.102$lq, xlim=c(0,1), main ="192.168.2.102 - 192.168.2.108", xlab="Link quality")
+	windows()
+	hist(data.103$lq, xlim=c(0,1), main ="192.168.2.103 - 192.168.2.108", xlab="Link quality")
+}
