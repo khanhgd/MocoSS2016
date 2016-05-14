@@ -7,10 +7,7 @@ nodePairLqVsTime<-function(ip,neighbor){
 	axis(2, col = "grey", col.ticks="grey", col.axis="grey")
 	abline(h=median(nodePair[,4]), col="#e60047", lwd=3)
 	abline(h=mean(nodePair[,4]), col="#00e69f", lwd=3)
-	abline(h=quantile(nodePair[,4],probs = c(0.1, 0.8, 0.9, 1)), col="#e69f00")	
-	#par(mar=c(0, 0, 0, 0))
-	title(main=paste(ip,neighbor,sep=" - "), ,col.main="#484848")	
-	legend("bottom", inset=c(0,-0.3), c("Median","Mean","Quantils"), xpd = TRUE, lty=c(1,1,1),lwd=c(2,2,2),col=c("#e60047","#00e69f","#e69f00"), bty = "n",cex = 0.75, horiz=TRUE)
+	abline(h=quantile(nodePair[,4],probs = c(0.1, 0.8, 0.9, 1)), col="#e69f00")
 }
 nodeLqVsTime<-function(ip){
 	colors=c("#e60047","#E69F00","#00e69f", "#0047e6","#9f00e6","#00bae6","#e62c00","#bae600","#ffff00")
@@ -47,6 +44,20 @@ taskOne<-function(){
 	legend("bottom", c("Median","Mean","Quantils"), xpd = TRUE, inset = c(0, 0.05), bty = "n", lty=c("solid","dashed","dotted"),lwd=c(2,2,2), col=colors[1], text.col="#484848", horiz=TRUE)
 	dev.off()
 }
+taskFour<-function(){
+	ips=c("192.168.2.102","192.168.2.101","192.168.2.109")
+	neighbors=c("192.168.2.105","192.168.2.107","192.168.2.110")
+	pdf("task4.pdf", paper="letter")
+	for(i in 1:3){
+		#windows()
+		par( mfrow = c( 1, 2 ), oma=c(5,2,5,2))
+		nodePairLqVsTime(ips[i], neighbors[i])
+		nodePairLqVsTime(neighbors[i], ips[i])
+		title(main=paste(ips[i],neighbors[i],sep=" - "), outer=T ,col.main="#484848")	
+		legend("bottomleft", inset=c(-1.2,-0.4), c("Median","Mean","Quantils"), xpd = NA, lty=c(1,1,1),lwd=c(2,2,2),col=c("#e60047","#00e69f","#e69f00"), bty = "n",cex = 0.75, horiz=TRUE)
+	}
+	dev.off()
+}
 taskFive<-function(){
 	#windows()
 	ips=c("192.168.2.101","192.168.2.102","192.168.2.107")
@@ -57,7 +68,16 @@ taskFive<-function(){
 		boxplot(subset(lq[lq[,1]==ips[i] & lq[,2]==neighbors[i],])[,4], ylab="lq", axes=FALSE,border="#484848")
 		title(main=paste(ips[i],neighbors[i],sep=" - ") ,col.main="#484848")
 		axis(2, col = "grey", col.ticks="grey", col.axis="grey")
-		nodePairLqVsTime(ips[i], neighbors[i])
+		nodePair<-subset(lq[lq[,1]==ips[i] & lq[,2]==neighbors[i],])
+	plot(nodePair[,3:4], cex = 0.8, axes=FALSE, col="#484848")
+	axis(1, col = "grey", col.ticks="grey", col.axis="grey")
+	axis(2, col = "grey", col.ticks="grey", col.axis="grey")
+	abline(h=median(nodePair[,4]), col="#e60047", lwd=3)
+	abline(h=mean(nodePair[,4]), col="#00e69f", lwd=3)
+	abline(h=quantile(nodePair[,4],probs = c(0.1, 0.8, 0.9, 1)), col="#e69f00")	
+	#par(mar=c(0, 0, 0, 0))
+	title(main=paste(ips[i],neighbors[i],sep=" - "), ,col.main="#484848")	
+	legend("bottom", inset=c(0,-0.3), c("Median","Mean","Quantils"), xpd = TRUE, lty=c(1,1,1),lwd=c(2,2,2),col=c("#e60047","#00e69f","#e69f00"), bty = "n",cex = 0.75, horiz=TRUE)
 		#windows()
 	}
 	dev.off()
