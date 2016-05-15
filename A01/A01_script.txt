@@ -63,7 +63,7 @@ taskTwo<-function(){
 		data.temp<-data.frame(ip=character(),neighbor=character(),lq=double())
 		for(j in 1:length(nodes)){
 			node<-subset(data.per[data.per[,1]==nodes[j],])
-			if(median(node[,4])>=0.8){
+			if(median(node[,4])>=0.85){
 				data.temp<-rbind(data.temp,node[,c(1,2,4)])
 			}
 		}
