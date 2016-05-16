@@ -76,12 +76,34 @@ taskTwo<-function(){
 	title(main="Network Topology",col.main="#484848",outer=T)
 	dev.off()
 }
+taskThree<-function(){
+	ips=c("192.168.2.101","192.168.2.101","192.168.2.103","192.168.2.106")
+	neighbors=c("192.168.2.108","192.168.2.109","192.168.2.110","192.168.2.110")
+	pdf("task3.pdf", paper="letter")
+	#windows()
+	par( mfrow = c( 2, 2 ),oma=c(4,2,4,2))
+	for(i in 1:length(ips)){
+		nodePair<-subset(lq[lq[,1]==ips[i] & lq[,2]==neighbors[i],])
+		plot(nodePair[,3:4], cex = 0.8, axes=FALSE, col="#484848")
+		axis(1, col = "grey", col.ticks="grey", col.axis="grey")
+		axis(2, col = "grey", col.ticks="grey", col.axis="grey")
+		abline(h=median(nodePair[,4]), col="#e60047", lwd=3)
+		abline(h=mean(nodePair[,4]), col="#00e69f", lwd=3)
+		abline(h=quantile(nodePair[,4],probs = c(0.1, 0.8, 0.9, 1)), col="#e69f00")
+		title(main=paste(ips[i],neighbors[i],sep=" - "), ,col.main="#484848")	
+	}
+	title(main="Abnormalities",col.main="#484848",outer=T)
+	par(fig = c(0, 1, 0, 1), oma = c(0, 0, 5, 2), mar = c(0, 0, 0, 0), new = TRUE)
+	plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
+	legend("bottom", inset=c(-0.05,0), c("Median","Mean","Quantils"), xpd = TRUE, lty=c(1,1,1),lwd=c(2,2,2),col=c("#e60047","#00e69f","#e69f00"), bty = "n",cex = 0.75, horiz=TRUE)
+	dev.off()
+}
 taskFour<-function(){
 	ips=c("192.168.2.101","192.168.2.102","192.168.2.103","192.168.2.106")
 	neighbors=c("192.168.2.109","192.168.2.107","192.168.2.106","192.168.2.110")
 	pdf("task4.pdf", paper="letter")
 	#windows()
-	par( mfrow = c( 2, 2 ),oma=c(2,2,4,2))
+	par( mfrow = c( 2, 2 ),oma=c(4,2,4,2))
 	for(i in 1:4){
 		nodePair1<-subset(lq[lq[,1]==ips[i] & lq[,2]==neighbors[i],])
 		sizeNP<-nrow(nodePair1)
@@ -127,3 +149,10 @@ taskSix<-function(){
 	axis(2, col = "grey", col.ticks="grey", col.axis="grey")
 	dev.off()
 }
+
+taskOne()
+taskTwo()
+taskThree()
+taskFour()
+taskFive()
+taskSix()
