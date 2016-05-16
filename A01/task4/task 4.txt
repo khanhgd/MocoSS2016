@@ -1,0 +1,10 @@
+This assumption is not correct. It means signal propagation is not symmetric.
+We plot graphs with 4 node pairs:
+192.168.2.101 and 192.168.2.109, 192.168.2.102 and 192.168.2.107,
+192.168.2.103 and 192.168.2.106, 192.168.2.106 and 192.168.2.110.
+
+In the graph there is points to denote the correlation of link quality between these nodes pair.
+For example with case of 192.168.2.106 and 192.168.2.110, there are many points appear in the top-left and bot-right coners,
+that mean link quality between these nodes in both ways is not equal (or not symmetric). 
+Link quality of 192.168.2.106 to 192.168.2.110 is around 1.0(loss no data), 
+but link quality of 192.168.2.110 to 192.168.2.106 is around 0.0 (loss all data).

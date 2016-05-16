@@ -1,0 +1,4 @@
+- Reason why the network topology has change:
+This is Ad-hoc network and one of characteristic of MANETs (Mobile Ad-hoc Network) is "Dynamic topologies". 
+In which, because nodes are free to move arbitrariy,
+network topology may change randomly and rapidly at unpredictable times with different links, although nodes have static ip.

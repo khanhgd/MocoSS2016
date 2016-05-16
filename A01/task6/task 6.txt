@@ -1,0 +1,5 @@
+In the first histogram of 192.168.2.102 - 192.168.2.108:
+Most of data packet were sent without loss of data, link quality varied from 0.8 and 1.0
+In the second histogram of 192.168.2.103 - 192.168.2.108:
+Data packets being sent between these node have link quality varied from 0.2 to 0.7.
+Most of them has loss nearly 50% data.
