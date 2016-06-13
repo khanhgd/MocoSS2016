@@ -208,6 +208,7 @@ public class task1 {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	public void writeExcel(int sheetNo,jsonObject jsonObject, String excelFilePath) throws IOException{
 		
 		long SystemTime = jsonObject.getSystemTime();
@@ -243,9 +244,101 @@ public class task1 {
 		try{
 //			  File excelFile = new File("C:\\Users\\Delcy\\Documents\\GitHub\\MocoSS2016\\A02\\MocoPA02Java\\sampledata\\excelfiles\\status-01.xls");
 			  File excelFile = new File(excelFilePath);
-			  
-		      FileInputStream infile = new FileInputStream(excelFile);		      
-		      HSSFWorkbook workbook = new HSSFWorkbook(infile);		      
+			  if(!excelFile.exists()){
+				  //create File
+				  HSSFWorkbook wb = new HSSFWorkbook();
+				  //new Sheets
+			      HSSFSheet sheet1 = wb.createSheet("status");
+			      HSSFSheet sheet2 = wb.createSheet("neighbors");
+			      HSSFSheet sheet3 = wb.createSheet("links");
+			      HSSFSheet sheet4 = wb.createSheet("routes");
+			      HSSFSheet sheet5 = wb.createSheet("topology");
+			      //create Title cells
+			      Cell cell = null;
+			      HSSFRow sheetrow;
+			      //statusSheet
+			      sheetrow = sheet1.createRow(0);	
+			      cell = sheetrow.getCell(0);
+			      if(cell == null){
+			          cell = sheetrow.createCell(0);
+			          cell.setCellValue("SystemTime");
+			          cell = sheetrow.createCell(1);
+			          cell.setCellValue("TimeSinceStartup");
+			      }
+			      //neighborSheet
+			      sheetrow = sheet2.createRow(0);  
+				      cell = sheetrow.getCell(0);
+				      if(cell == null){
+				          cell = sheetrow.createCell(0);
+				          cell.setCellValue("ipAdress");
+				          cell = sheetrow.createCell(1);
+				          cell.setCellValue("symmetric");
+				          cell = sheetrow.createCell(2);
+				          cell.setCellValue("multiPointRelay");
+				          cell = sheetrow.createCell(3);
+				          cell.setCellValue("multiPointRelaySelector");
+				          cell = sheetrow.createCell(4);
+				          cell.setCellValue("willingness");
+				          cell = sheetrow.createCell(5);
+				          cell.setCellValue("twoHopNeighborCount");
+				  }
+				  //linkSheet
+				  sheetrow = sheet3.createRow(0);	      
+					cell = sheetrow.getCell(0);
+					      if(cell == null){
+					          cell = sheetrow.createCell(0);
+					          cell.setCellValue("localIP");
+					          cell = sheetrow.createCell(1);
+					          cell.setCellValue("remoteIP");
+					          cell = sheetrow.createCell(2);
+					          cell.setCellValue("validityTime");
+					          cell = sheetrow.createCell(3);
+					          cell.setCellValue("linkQuality");
+					          cell = sheetrow.createCell(4);
+					          cell.setCellValue("neighborLinkQuality");
+					          cell = sheetrow.createCell(5);
+					          cell.setCellValue("linkCost");
+					      }
+				  //routeSheet
+					      sheetrow = sheet4.createRow(0);	
+						      cell = sheetrow.getCell(0);
+						      if(cell == null){
+						          cell = sheetrow.createCell(0);
+						          cell.setCellValue("destination");
+						          cell = sheetrow.createCell(1);
+						          cell.setCellValue("genmask");
+						          cell = sheetrow.createCell(2);
+						          cell.setCellValue("gateway");
+						          cell = sheetrow.createCell(3);
+						          cell.setCellValue("metric");
+						          cell = sheetrow.createCell(4);
+						          cell.setCellValue("rtpMetricCost");
+						          cell = sheetrow.createCell(5);
+						          cell.setCellValue("networkInterface");
+						      }
+			      //topologySheet
+				sheetrow = sheet5.createRow(0);	      
+					cell = sheetrow.getCell(0);
+							      if(cell == null){				    	  
+							          cell = sheetrow.createCell(0);
+							          cell.setCellValue("destinationIP");
+							          cell = sheetrow.createCell(1);
+							          cell.setCellValue("lastHopIP");
+							          cell = sheetrow.createCell(2);
+							          cell.setCellValue("linkQuality");
+							          cell = sheetrow.createCell(3);
+							          cell.setCellValue("neighborLinkQuality");
+							          cell = sheetrow.createCell(4);
+							          cell.setCellValue("tcEdgeCost");
+							          cell = sheetrow.createCell(5);
+							          cell.setCellValue("validityTime");
+							      }
+			      FileOutputStream fileOut = new FileOutputStream(excelFile);
+			      wb.write(fileOut);
+			      fileOut.close();
+			  }
+			  FileInputStream infile = new FileInputStream(excelFile);
+			  HSSFWorkbook workbook = new HSSFWorkbook(infile);
 		      //getsheet  
 		      HSSFSheet statusSheet 	= workbook.getSheetAt(0);
 		      HSSFSheet neighborSheet 	= workbook.getSheetAt(1);
