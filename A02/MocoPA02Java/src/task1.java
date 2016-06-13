@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.text.*;
 
@@ -15,6 +17,17 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 
 public class task1 {	
+
+	Path parentPath = null;
+	public task1(){
+		try {
+			Path path = Paths.get(task1.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+			this.parentPath = path.getParent();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public void download(String input, int domainId) throws IOException
 	{   			
@@ -54,7 +67,7 @@ public class task1 {
 			URL url = new URL(input);
 			ReadableByteChannel rbc =  Channels.newChannel(url.openStream());		
 			FileOutputStream fos = new FileOutputStream(
-					"E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\"+filename+".json");
+					parentPath.resolve("sampledata\\jsonfiles\\"+filename+".json").toString());
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 			System.out.println("Successful created filename : "+filename);
 		} 
@@ -63,29 +76,29 @@ public class task1 {
 		}	
 	}		
 	
-	public void jsonParser(String jsonFilePath)
+	public void jsonParser(String jsonFilePath, int numFile)
 	{
 		jsonObject jsonObj = new jsonObject();		
 		
 		String excelFilePath = null;
-		switch (jsonFilePath) {
-		case "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-01.json":
-			excelFilePath = "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-01.xls";
+		switch (numFile) {
+		case 1:
+			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-01.xls").toString();
 			break;
-		case "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-02.json":
-			excelFilePath = "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-02.xls";
+		case 2:
+			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-02.xls").toString();
 			break;
-		case "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-03.json":
-			excelFilePath = "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-03.xls";
+		case 3:
+			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-03.xls").toString();
 			break;
-		case "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-04.json":
-			excelFilePath = "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-04.xls";
+		case 4:
+			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-04.xls").toString();
 			break;
-		case "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-05.json":
-			excelFilePath = "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-05.xls";
+		case 5:
+			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-05.xls").toString();
 			break;
-		case "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-06.json":
-			excelFilePath = "E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-06.xls";
+		case 6:
+			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-06.xls").toString();
 			break;
 		default:
 			break;
@@ -228,7 +241,7 @@ public class task1 {
 		
 		//open stream 		
 		try{
-//			  File excelFile = new File("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\excelfiles\\status-01.xls");
+//			  File excelFile = new File("C:\\Users\\Delcy\\Documents\\GitHub\\MocoSS2016\\A02\\MocoPA02Java\\sampledata\\excelfiles\\status-01.xls");
 			  File excelFile = new File(excelFilePath);
 			  
 		      FileInputStream infile = new FileInputStream(excelFile);		      
@@ -375,6 +388,15 @@ public class task1 {
 	
 	public static void main(String[] args) throws IOException 
 	{
+		//Current Path
+		Path parentPath = null;
+		try {
+			Path path = Paths.get(task1.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+			parentPath = path.getParent();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//TESTLink
 		ArrayList<String> urlList = new ArrayList<String>();
 		urlList.add("http://vimeo.com/api/v2/video/38356.json");
@@ -384,23 +406,24 @@ public class task1 {
 		urlList.add("http://vimeo.com/api/v2/video/38356.json");
 		urlList.add("http://vimeo.com/api/v2/video/38356.json");
 		//Files
-		ArrayList<String> jsonFilesList = new ArrayList<String>();
-		jsonFilesList.add("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-01.json");
-		jsonFilesList.add("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-02.json");
-		jsonFilesList.add("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-03.json");
-		jsonFilesList.add("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-04.json");
-		jsonFilesList.add("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-05.json");
-		jsonFilesList.add("E:\\Eclipse_workspace\\MocoPA02\\sampledata\\jsonfiles\\status-06.json");
+		ArrayList<Path> jsonFilesList = new ArrayList<Path>();
+		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-01.json"));
+		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-02.json"));
+		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-03.json"));
+		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-04.json"));
+		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-05.json"));
+		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-06.json"));
 		
 		task1 taskObj = new task1();
 		for(int i=0; i<jsonFilesList.size(); i++){
-			String pathFile = jsonFilesList.get(i);
-			taskObj.jsonParser(pathFile);
+			Path pathFile = jsonFilesList.get(i);
 			int j=i+1;
+			taskObj.jsonParser(pathFile.toString(),j);
 			System.out.println("Success update file status-0"+j+".xls");
 		}
 		
 		System.out.println("============COMPLETED=============");
+        
 	}
 }
 
