@@ -25,15 +25,17 @@ public class task1 {
 	{
 		StatusFile sFiles = new StatusFile();
 		MeasurementFile mFiles = new MeasurementFile();
+		
 		//Current Path
-		Path parentPath = null;
+		Path pPath = null;
 		try {
 			Path path = Paths.get(task1.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-			parentPath = path.getParent();
+			pPath = path.getParent();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		final Path parentPath = pPath;
 		//TESTLink
 		ArrayList<String> urlList = new ArrayList<String>();
 		urlList.add("http://vimeo.com/api/v2/video/38356.json");
@@ -51,20 +53,34 @@ public class task1 {
 		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-05.json"));
 		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-06.json"));
 		
-		//For 2 hours, every 30 seconds, updates every 10 minutes? 
-		for(int i=0; i<jsonFilesList.size(); i++){
-			Path pathFile = jsonFilesList.get(i);
-			int j=i+1;
-			sFiles.jsonParser(pathFile.toString(),j);
-			System.out.println("Success update file status-0"+j+".xls");
-		}
-		mFiles.httpParser(parentPath.resolve("sampledata\\jsonfiles\\http.txt").toString());
-		System.out.println("Success update file http.xls");
-		mFiles.pingParser(parentPath.resolve("sampledata\\jsonfiles\\ping.txt").toString());
-		System.out.println("Success update file ping.xls");
+		System.out.println("Initiating Process ...");
+    	//For 2 hours, every 60 seconds
+		Timer timer = new Timer();
+
+		timer.schedule( new TimerTask() {
+			long initialTime = System.currentTimeMillis();
+			//long totalTime = 2*60*60*1000;
+			long totalTime = 3*60*1000;
+		    public void run() {
+		    	if (System.currentTimeMillis() - initialTime > totalTime) {
+		    		System.out.println("============COMPLETED=============");
+	                cancel();
+	              } else {
+	            	  for(int i=0; i<jsonFilesList.size(); i++){
+	  					Path pathFile = jsonFilesList.get(i);
+	  					int j=i+1;
+	  					sFiles.jsonParser(pathFile.toString(),j);
+	  				}
+	  				mFiles.httpParser(parentPath.resolve("sampledata\\jsonfiles\\http.txt").toString());
+	  				mFiles.pingParser(parentPath.resolve("sampledata\\jsonfiles\\ping.txt").toString());
+	  				
+	  				System.out.println("Success update files");
+	              }				
+		    }
+		}, 0, 60000);
+		//}, 60*1000, 2*60*60*1000);
 		
-		System.out.println("============COMPLETED=============");
-        
+		
 	}
 }
 

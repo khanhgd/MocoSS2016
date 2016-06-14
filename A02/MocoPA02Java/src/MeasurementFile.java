@@ -33,10 +33,17 @@ public class MeasurementFile {
 		}
 	}
 	
-	public void download(String fileId) throws IOException {
+	public void download(String fileId) {
 		// save text file from URL
 		try {
-			// "http://jsonplaceholder.typicode.com/posts"
+			
+			//Check if Directory exists
+			File theDir = new File("sampledata\\jsonfiles");
+			// if the directory does not exist, create it
+			if (!theDir.exists()) {
+				theDir.mkdir();
+			}
+			
 			URL url = new URL("http://gizmo-01.informatik.uni-bonn.de/"+fileId+".txt");
 			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 			// handle error
@@ -46,6 +53,10 @@ public class MeasurementFile {
 			System.out.println("Successful created filename : " + fileId);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+		}catch(SecurityException se){
+			System.err.println("Unable to create directory");
+	    } catch (IOException e) {
+			
 		}
 	}
 	
@@ -53,6 +64,13 @@ public class MeasurementFile {
 		String excelFilePath = parentPath.resolve("sampledata\\excelfiles\\http.xls").toString();
 		try (BufferedReader br = new BufferedReader(new FileReader(textFilePath)))
 		{
+			//Check if Directory exists
+			File theDir = new File("sampledata\\excelfiles");
+			// if the directory does not exist, create it
+			if (!theDir.exists()) {
+				theDir.mkdir();
+			}
+			
 			ArrayList<HttpObject> httpArray= new ArrayList<HttpObject>();
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
@@ -69,13 +87,21 @@ public class MeasurementFile {
 			writeHttpExcel(httpArray,excelFilePath);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}catch(SecurityException se){
+			System.err.println("Unable to create directory");
+	    }
 	}
 	
 	public void pingParser(String textFilePath){
 		String excelFilePath = parentPath.resolve("sampledata\\excelfiles\\ping.xls").toString();
 		try (BufferedReader br = new BufferedReader(new FileReader(textFilePath)))
 		{
+			//Check if Directory exists
+			File theDir = new File("sampledata\\excelfiles");
+			// if the directory does not exist, create it
+			if (!theDir.exists()) {
+				theDir.mkdir();
+			}
 			ArrayList<PingObject> pingArray= new ArrayList<PingObject>();
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
@@ -102,7 +128,9 @@ public class MeasurementFile {
 			writePingExcel(pingArray,excelFilePath);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}catch(SecurityException se){
+			System.err.println("Unable to create directory");
+	    }
 	}
 	
 	public void writeHttpExcel(ArrayList<HttpObject> httpArray, String excelFilePath){

@@ -38,7 +38,7 @@ public class StatusFile {
 		}
 	}
 	
-	public void download(String input, int domainId) throws IOException
+	public void download(String input, int domainId)
 	{   			
 		//save JSON file from URL
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHss");
@@ -76,6 +76,13 @@ public class StatusFile {
 			URL url = new URL(input);
 			ReadableByteChannel rbc =  Channels.newChannel(url.openStream());
 			//handle error
+			
+			//Check if Directory exists
+			File theDir = new File("sampledata\\jsonfiles");
+			// if the directory does not exist, create it
+			if (!theDir.exists()) {
+				theDir.mkdir();
+			}
 			FileOutputStream fos = new FileOutputStream(
 					parentPath.resolve("sampledata\\jsonfiles\\"+filename+".json").toString());
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
@@ -83,6 +90,10 @@ public class StatusFile {
 		} 
 		catch (MalformedURLException e) {
 			e.printStackTrace();
+		}catch(SecurityException se){
+			System.err.println("Unable to create directory");
+	    } catch (IOException e) {
+			
 		}	
 	}
 
@@ -114,7 +125,15 @@ public class StatusFile {
 			break;
 		}
 		
-		try {			
+		try {
+			
+			//Check if Directory exists
+			File theDir = new File("sampledata\\excelfiles");
+			// if the directory does not exist, create it
+			if (!theDir.exists()) {
+				theDir.mkdir();
+			}
+			
 			//read file
 			FileReader reader = new FileReader(jsonFilePath);
 			JSONParser jsonParser = new JSONParser();
@@ -215,8 +234,11 @@ public class StatusFile {
 			ex.printStackTrace();
 		} catch (NullPointerException ex) {
 			ex.printStackTrace();
-		}
+		}catch(SecurityException se){
+			System.err.println("Unable to create directory");
+	    }
 	}
+	
 
 	@SuppressWarnings("resource")
 	public void writeExcel(int sheetNo,jsonObject jsonObject, String excelFilePath) throws IOException{
