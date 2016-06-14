@@ -58,10 +58,10 @@ public class task1 {
 			sFiles.jsonParser(pathFile.toString(),j);
 			System.out.println("Success update file status-0"+j+".xls");
 		}
-		mFiles.textParser(parentPath.resolve("sampledata\\jsonfiles\\http.txt").toString());
-		System.out.println("Success update file http.txt");
-		mFiles.textParser(parentPath.resolve("sampledata\\jsonfiles\\ping.txt").toString());
-		System.out.println("Success update file ping.txt");
+		mFiles.httpParser(parentPath.resolve("sampledata\\jsonfiles\\http.txt").toString());
+		System.out.println("Success update file http.xls");
+		mFiles.pingParser(parentPath.resolve("sampledata\\jsonfiles\\ping.txt").toString());
+		System.out.println("Success update file ping.xls");
 		
 		System.out.println("============COMPLETED=============");
         

@@ -2,7 +2,7 @@
 public class PingObject {
 	
 	private long timestamp;
-	private int Packetloss;
+	private double Packetloss;
 	private double RTTmin;
 	private double RTTavg;
 	private double RTTmax;
@@ -12,10 +12,10 @@ public class PingObject {
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
-	public int getPacketloss() {
+	public double getPacketloss() {
 		return Packetloss;
 	}
-	public void setPacketloss(int packetloss) {
+	public void setPacketloss(double packetloss) {
 		Packetloss = packetloss;
 	}
 	public double getRTTmin() {
