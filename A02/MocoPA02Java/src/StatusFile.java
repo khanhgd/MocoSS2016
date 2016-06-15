@@ -16,10 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -41,59 +42,34 @@ public class StatusFile {
 	public void download(String input, int domainId)
 	{   			
 		//save JSON file from URL
-		DateFormat df = new SimpleDateFormat("yyyyMMddHHss");
-		String date = df.format(new Date());
-		
-		String domain;
-		switch (domainId) {
-		case 0:
-			domain = "gizmo-01";
-			break;
-		case 1:
-			domain = "gizmo-02";
-			break;
-		case 2:
-			domain = "gizmo-03";
-			break;
-		case 3:
-			domain = "gizmo-04";
-			break;
-		case 4:
-			domain = "gizmo-05";
-			break;
-		case 5:
-			domain = "gizmo-06";
-			break;
-		default:
-			domain = "@_@";
-			break;
-		}
-		
-		String filename = domain+"-"+date;
+		String filename = "status-0"+(domainId+1)+".json";
 		
 		try {
 			//"http://jsonplaceholder.typicode.com/posts"
 			URL url = new URL(input);
 			ReadableByteChannel rbc =  Channels.newChannel(url.openStream());
-			//handle error
 			
 			//Check if Directory exists
-			File theDir = new File("sampledata\\jsonfiles");
+			File theDir = new File(parentPath.resolve("dataPa2").toString());
+			File theDir2 = new File(parentPath.resolve("dataPa2\\jsonfiles").toString());
 			// if the directory does not exist, create it
 			if (!theDir.exists()) {
 				theDir.mkdir();
+				theDir2.mkdir();
 			}
 			FileOutputStream fos = new FileOutputStream(
-					parentPath.resolve("sampledata\\jsonfiles\\"+filename+".json").toString());
+					parentPath.resolve("dataPa2\\jsonfiles\\"+filename).toString());
+
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-			System.out.println("Successful created filename : "+filename);
+			//System.out.println("Successful created filename : "+filename);
 		} 
 		catch (MalformedURLException e) {
 			e.printStackTrace();
 		}catch(SecurityException se){
 			System.err.println("Unable to create directory");
 	    } catch (IOException e) {
-			
+	    	System.err.println("Unable to access URL: " + input + "\n");
+	    	e.printStackTrace();
 		}	
 	}
 
@@ -104,22 +80,22 @@ public class StatusFile {
 		String excelFilePath = null;
 		switch (numFile) {
 		case 1:
-			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-01.xls").toString();
+			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-01.xlsx").toString();
 			break;
 		case 2:
-			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-02.xls").toString();
+			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-02.xlsx").toString();
 			break;
 		case 3:
-			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-03.xls").toString();
+			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-03.xlsx").toString();
 			break;
 		case 4:
-			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-04.xls").toString();
+			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-04.xlsx").toString();
 			break;
 		case 5:
-			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-05.xls").toString();
+			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-05.xlsx").toString();
 			break;
 		case 6:
-			excelFilePath = parentPath.resolve("sampledata\\excelfiles\\status-06.xls").toString();
+			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-06.xlsx").toString();
 			break;
 		default:
 			break;
@@ -128,7 +104,7 @@ public class StatusFile {
 		try {
 			
 			//Check if Directory exists
-			File theDir = new File("sampledata\\excelfiles");
+			File theDir = new File("dataPa2\\excelfiles");
 			// if the directory does not exist, create it
 			if (!theDir.exists()) {
 				theDir.mkdir();
@@ -274,20 +250,19 @@ public class StatusFile {
 		
 		//open stream 		
 		try{
-//			  File excelFile = new File("C:\\Users\\Delcy\\Documents\\GitHub\\MocoSS2016\\A02\\MocoPA02Java\\sampledata\\excelfiles\\status-01.xls");
 			  File excelFile = new File(excelFilePath);
 			  if(!excelFile.exists()){
 				  //create File
-				  HSSFWorkbook wb = new HSSFWorkbook();
+				  XSSFWorkbook wb = new XSSFWorkbook();
 				  //new Sheets
-			      HSSFSheet sheet1 = wb.createSheet("status");
-			      HSSFSheet sheet2 = wb.createSheet("neighbors");
-			      HSSFSheet sheet3 = wb.createSheet("links");
-			      HSSFSheet sheet4 = wb.createSheet("routes");
-			      HSSFSheet sheet5 = wb.createSheet("topology");
+			      XSSFSheet sheet1 = wb.createSheet("status");
+			      XSSFSheet sheet2 = wb.createSheet("neighbors");
+			      XSSFSheet sheet3 = wb.createSheet("links");
+			      XSSFSheet sheet4 = wb.createSheet("routes");
+			      XSSFSheet sheet5 = wb.createSheet("topology");
 			      //create Title cells
 			      Cell cell = null;
-			      HSSFRow sheetrow;
+			      XSSFRow sheetrow;
 			      //statusSheet
 			      sheetrow = sheet1.createRow(0);	
 			      cell = sheetrow.getCell(0);
@@ -378,13 +353,13 @@ public class StatusFile {
 			      fileOut.close();
 			  }
 			  FileInputStream infile = new FileInputStream(excelFile);
-			  HSSFWorkbook workbook = new HSSFWorkbook(infile);
+			  XSSFWorkbook workbook = new XSSFWorkbook(infile);
 		      //getsheet  
-		      HSSFSheet statusSheet 	= workbook.getSheetAt(0);
-		      HSSFSheet neighborSheet 	= workbook.getSheetAt(1);
-		      HSSFSheet linkSheet 		= workbook.getSheetAt(2);
-		      HSSFSheet routeSheet 		= workbook.getSheetAt(3);
-		      HSSFSheet topologySheet 	= workbook.getSheetAt(4);
+		      XSSFSheet statusSheet 	= workbook.getSheetAt(0);
+		      XSSFSheet neighborSheet 	= workbook.getSheetAt(1);
+		      XSSFSheet linkSheet 		= workbook.getSheetAt(2);
+		      XSSFSheet routeSheet 		= workbook.getSheetAt(3);
+		      XSSFSheet topologySheet 	= workbook.getSheetAt(4);
 		      //get number or row
 		      int rowNumSheet1 = statusSheet.getLastRowNum()+1;
 		      int rowNumSheet2 = neighborSheet.getLastRowNum()+1;
@@ -394,7 +369,7 @@ public class StatusFile {
 		      
 		      Cell cell = null;
 		      
-		      HSSFRow sheetrow;
+		      XSSFRow sheetrow;
 		      switch (sheetNo) {
 		      	case 1:
 		      		  sheetrow = statusSheet.getRow(rowNumSheet1);

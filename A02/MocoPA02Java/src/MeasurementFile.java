@@ -14,11 +14,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class MeasurementFile {
 
@@ -38,34 +38,35 @@ public class MeasurementFile {
 		try {
 			
 			//Check if Directory exists
-			File theDir = new File("sampledata\\jsonfiles");
+			File theDir = new File(parentPath.resolve("dataPa2").toString());
+			File theDir2 = new File(parentPath.resolve("dataPa2\\jsonfiles").toString());
 			// if the directory does not exist, create it
 			if (!theDir.exists()) {
 				theDir.mkdir();
+				theDir2.mkdir();
 			}
 			
 			URL url = new URL("http://gizmo-01.informatik.uni-bonn.de/"+fileId+".txt");
 			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-			// handle error
+			
 			FileOutputStream fos = new FileOutputStream(
-					parentPath.resolve("sampledata\\jsonfiles\\" + fileId + ".txt").toString());
+					parentPath.resolve("dataPa2\\jsonfiles\\" + fileId + ".txt").toString());
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-			System.out.println("Successful created filename : " + fileId);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}catch(SecurityException se){
 			System.err.println("Unable to create directory");
 	    } catch (IOException e) {
-			
+	    	System.err.println("Unable to access URL: " + "http://gizmo-01.informatik.uni-bonn.de/"+fileId+".txt");
 		}
 	}
 	
 	public void httpParser(String textFilePath){
-		String excelFilePath = parentPath.resolve("sampledata\\excelfiles\\http.xls").toString();
+		String excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\http.xlsx").toString();
 		try (BufferedReader br = new BufferedReader(new FileReader(textFilePath)))
 		{
 			//Check if Directory exists
-			File theDir = new File("sampledata\\excelfiles");
+			File theDir = new File("dataPa2\\excelfiles");
 			// if the directory does not exist, create it
 			if (!theDir.exists()) {
 				theDir.mkdir();
@@ -93,11 +94,11 @@ public class MeasurementFile {
 	}
 	
 	public void pingParser(String textFilePath){
-		String excelFilePath = parentPath.resolve("sampledata\\excelfiles\\ping.xls").toString();
+		String excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\ping.xlsx").toString();
 		try (BufferedReader br = new BufferedReader(new FileReader(textFilePath)))
 		{
 			//Check if Directory exists
-			File theDir = new File("sampledata\\excelfiles");
+			File theDir = new File("dataPa2\\excelfiles");
 			// if the directory does not exist, create it
 			if (!theDir.exists()) {
 				theDir.mkdir();
@@ -139,12 +140,12 @@ public class MeasurementFile {
 			File excelFile = new File(excelFilePath);
 			if (!excelFile.exists()) {
 				// create File
-				HSSFWorkbook wb = new HSSFWorkbook();
+				XSSFWorkbook wb = new XSSFWorkbook();
 				// new Sheets
-				HSSFSheet sheet1 = wb.createSheet("Sheet1");
+				XSSFSheet sheet1 = wb.createSheet("Sheet1");
 				// create Title cells
 				Cell cell = null;
-				HSSFRow sheetrow;
+				XSSFRow sheetrow;
 				sheetrow = sheet1.createRow(0);
 				cell = sheetrow.getCell(0);
 				if (cell == null) {
@@ -160,16 +161,16 @@ public class MeasurementFile {
 				fileOut.close();
 			}
 			FileInputStream infile = new FileInputStream(excelFile);
-			HSSFWorkbook workbook = new HSSFWorkbook(infile);
+			XSSFWorkbook workbook = new XSSFWorkbook(infile);
 			// getsheet
-			HSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFSheet sheet = workbook.getSheetAt(0);
 			
 			for(HttpObject httpObj: httpArray){
 				if(!columnContains(sheet, httpObj.getTimestamp())){
 					// get number or row
 					int rowNumSheet = sheet.getLastRowNum() + 1;
 					Cell cell = null;
-					HSSFRow sheetrow= sheet.getRow(rowNumSheet);
+					XSSFRow sheetrow= sheet.getRow(rowNumSheet);
 					if (sheetrow == null) {
 						sheetrow = sheet.createRow(rowNumSheet);
 					}
@@ -206,12 +207,12 @@ public class MeasurementFile {
 					File excelFile = new File(excelFilePath);
 					if (!excelFile.exists()) {
 						// create File
-						HSSFWorkbook wb = new HSSFWorkbook();
+						XSSFWorkbook wb = new XSSFWorkbook();
 						// new Sheets
-						HSSFSheet sheet1 = wb.createSheet("Sheet1");
+						XSSFSheet sheet1 = wb.createSheet("Sheet1");
 						// create Title cells
 						Cell cell = null;
-						HSSFRow sheetrow;
+						XSSFRow sheetrow;
 						sheetrow = sheet1.createRow(0);
 						cell = sheetrow.getCell(0);
 						if (cell == null) {
@@ -231,16 +232,16 @@ public class MeasurementFile {
 						fileOut.close();
 					}
 					FileInputStream infile = new FileInputStream(excelFile);
-					HSSFWorkbook workbook = new HSSFWorkbook(infile);
+					XSSFWorkbook workbook = new XSSFWorkbook(infile);
 					// getsheet
-					HSSFSheet sheet = workbook.getSheetAt(0);
+					XSSFSheet sheet = workbook.getSheetAt(0);
 					
 					for(PingObject pingObj: pingArray){
 						if(!columnContains(sheet, pingObj.getTimestamp())){
 							// get number or row
 							int rowNumSheet = sheet.getLastRowNum() + 1;
 							Cell cell = null;
-							HSSFRow sheetrow= sheet.getRow(rowNumSheet);
+							XSSFRow sheetrow= sheet.getRow(rowNumSheet);
 							if (sheetrow == null) {
 								sheetrow = sheet.createRow(rowNumSheet);
 							}
@@ -275,7 +276,7 @@ public class MeasurementFile {
 				}
 	}
 	
-	public Boolean columnContains(HSSFSheet sheet, long timestamp){
+	public Boolean columnContains(XSSFSheet sheet, long timestamp){
 		int lastRow = sheet.getLastRowNum();
 		for(int i = 1; i <= lastRow; i++){
 			Row row = sheet.getRow(i);

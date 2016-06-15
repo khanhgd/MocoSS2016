@@ -37,23 +37,18 @@ public class task1 {
 		}
 		final Path parentPath = pPath;
 		//TESTLink
-		ArrayList<String> urlList = new ArrayList<String>();
-		urlList.add("http://vimeo.com/api/v2/video/38356.json");
-		urlList.add("http://vimeo.com/api/v2/video/38356.json");	
-		urlList.add("http://vimeo.com/api/v2/video/38356.json");
-		urlList.add("http://vimeo.com/api/v2/video/38356.json");
-		urlList.add("http://vimeo.com/api/v2/video/38356.json");
-		urlList.add("http://vimeo.com/api/v2/video/38356.json");
+		//sFiles.download("http://vimeo.com/api/v2/video/38356.json", 0);
+		
+		
 		//Files
 		ArrayList<Path> jsonFilesList = new ArrayList<Path>();
-		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-01.json"));
-		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-02.json"));
-		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-03.json"));
-		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-04.json"));
-		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-05.json"));
-		jsonFilesList.add(parentPath.resolve("sampledata\\jsonfiles\\status-06.json"));
+		jsonFilesList.add(parentPath.resolve("dataPa2\\jsonfiles\\status-01.json"));
+		jsonFilesList.add(parentPath.resolve("dataPa2\\jsonfiles\\status-02.json"));
+		jsonFilesList.add(parentPath.resolve("dataPa2\\jsonfiles\\status-03.json"));
+		jsonFilesList.add(parentPath.resolve("dataPa2\\jsonfiles\\status-04.json"));
+		jsonFilesList.add(parentPath.resolve("dataPa2\\jsonfiles\\status-05.json"));
+		jsonFilesList.add(parentPath.resolve("dataPa2\\jsonfiles\\status-06.json"));
 		
-		System.out.println("Initiating Process ...");
     	//For 2 hours, every 60 seconds
 		Timer timer = new Timer();
 
@@ -66,21 +61,32 @@ public class task1 {
 		    		System.out.println("============COMPLETED=============");
 	                cancel();
 	              } else {
+	            	  System.out.println("Downloading files ...");
+	          		//downloadFiles
+	          		/*sFiles.download("http://gizmo-01.informatik.uni-bonn.de/status.json", 0);
+	          		sFiles.download("http://gizmo-02.informatik.uni-bonn.de/status.json", 1);
+	          		sFiles.download("http://gizmo-03.informatik.uni-bonn.de/status.json", 2);
+	          		sFiles.download("http://gizmo-04.informatik.uni-bonn.de/status.json", 3);
+	          		sFiles.download("http://gizmo-05.informatik.uni-bonn.de/status.json", 4);
+	          		sFiles.download("http://gizmo-06.informatik.uni-bonn.de/status.json", 5);
+	          		mFiles.download("http");
+	          		mFiles.download("ping");*/
+
+	        		System.out.println("Saving data ...");
 	            	  for(int i=0; i<jsonFilesList.size(); i++){
 	  					Path pathFile = jsonFilesList.get(i);
 	  					int j=i+1;
 	  					sFiles.jsonParser(pathFile.toString(),j);
 	  				}
-	  				mFiles.httpParser(parentPath.resolve("sampledata\\jsonfiles\\http.txt").toString());
-	  				mFiles.pingParser(parentPath.resolve("sampledata\\jsonfiles\\ping.txt").toString());
+	  				mFiles.httpParser(parentPath.resolve("dataPa2\\jsonfiles\\http.txt").toString());
+	  				mFiles.pingParser(parentPath.resolve("dataPa2\\jsonfiles\\ping.txt").toString());
 	  				
 	  				System.out.println("Success update files");
 	              }				
 		    }
 		}, 0, 60000);
 		//}, 60*1000, 2*60*60*1000);
-		
-		
+
 	}
 }
 
