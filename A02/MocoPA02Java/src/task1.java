@@ -54,39 +54,41 @@ public class task1 {
 
 		timer.schedule( new TimerTask() {
 			long initialTime = System.currentTimeMillis();
-			//long totalTime = 2*60*60*1000;
-			long totalTime = 3*60*1000;
+			long totalTime = 2*60*60*1000;
+			//long totalTime = 60*1000;
 		    public void run() {
 		    	if (System.currentTimeMillis() - initialTime > totalTime) {
-		    		System.out.println("============COMPLETED=============");
+		    		System.out.println("============COMPLETED STATUS=============");
+		    		System.out.println("Downloading measurement data files ...");
+		      		mFiles.download("http");
+		      		mFiles.download("ping");
+		      		System.out.println("Saving measurement data ...");
+		    		mFiles.httpParser(parentPath.resolve("dataPa2\\jsonfiles\\http.txt").toString());
+		    		mFiles.pingParser(parentPath.resolve("dataPa2\\jsonfiles\\ping.txt").toString());
+		    		System.out.println("Success update measurement data files");
+		    		System.out.println("============COMPLETED MEASUREMENT DATA=============");
 	                cancel();
 	              } else {
-	            	  System.out.println("Downloading files ...");
+	            	  System.out.println("Downloading status files ...");
 	          		//downloadFiles
-	          		/*sFiles.download("http://gizmo-01.informatik.uni-bonn.de/status.json", 0);
+	          		sFiles.download("http://gizmo-01.informatik.uni-bonn.de/status.json", 0);
 	          		sFiles.download("http://gizmo-02.informatik.uni-bonn.de/status.json", 1);
 	          		sFiles.download("http://gizmo-03.informatik.uni-bonn.de/status.json", 2);
 	          		sFiles.download("http://gizmo-04.informatik.uni-bonn.de/status.json", 3);
 	          		sFiles.download("http://gizmo-05.informatik.uni-bonn.de/status.json", 4);
 	          		sFiles.download("http://gizmo-06.informatik.uni-bonn.de/status.json", 5);
-	          		mFiles.download("http");
-	          		mFiles.download("ping");*/
 
-	        		System.out.println("Saving data ...");
+	        		System.out.println("Saving status data ...");
 	            	  for(int i=0; i<jsonFilesList.size(); i++){
 	  					Path pathFile = jsonFilesList.get(i);
 	  					int j=i+1;
 	  					sFiles.jsonParser(pathFile.toString(),j);
 	  				}
-	  				mFiles.httpParser(parentPath.resolve("dataPa2\\jsonfiles\\http.txt").toString());
-	  				mFiles.pingParser(parentPath.resolve("dataPa2\\jsonfiles\\ping.txt").toString());
 	  				
-	  				System.out.println("Success update files");
+	  				System.out.println("Success update status files");
 	              }				
 		    }
-		}, 0, 60000);
-		//}, 60*1000, 2*60*60*1000);
-
+		}, 0, 30000);
 	}
 }
 

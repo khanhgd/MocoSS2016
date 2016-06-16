@@ -74,33 +74,7 @@ public class StatusFile {
 	}
 
 	public void jsonParser(String jsonFilePath, int numFile)
-	{
-		jsonObject jsonObj = new jsonObject();		
-		
-		String excelFilePath = null;
-		switch (numFile) {
-		case 1:
-			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-01.xlsx").toString();
-			break;
-		case 2:
-			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-02.xlsx").toString();
-			break;
-		case 3:
-			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-03.xlsx").toString();
-			break;
-		case 4:
-			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-04.xlsx").toString();
-			break;
-		case 5:
-			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-05.xlsx").toString();
-			break;
-		case 6:
-			excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-06.xlsx").toString();
-			break;
-		default:
-			break;
-		}
-		
+	{	
 		try {
 			
 			//Check if Directory exists
@@ -108,6 +82,32 @@ public class StatusFile {
 			// if the directory does not exist, create it
 			if (!theDir.exists()) {
 				theDir.mkdir();
+			}
+			
+			jsonObject jsonObj = new jsonObject();		
+			
+			String excelFilePath = null;
+			switch (numFile) {
+			case 1:
+				excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-01.xlsx").toString();
+				break;
+			case 2:
+				excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-02.xlsx").toString();
+				break;
+			case 3:
+				excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-03.xlsx").toString();
+				break;
+			case 4:
+				excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-04.xlsx").toString();
+				break;
+			case 5:
+				excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-05.xlsx").toString();
+				break;
+			case 6:
+				excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\status-06.xlsx").toString();
+				break;
+			default:
+				break;
 			}
 			
 			//read file
@@ -207,7 +207,7 @@ public class StatusFile {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 		} catch (NullPointerException ex) {
 			ex.printStackTrace();
 		}catch(SecurityException se){

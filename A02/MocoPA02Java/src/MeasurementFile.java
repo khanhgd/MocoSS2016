@@ -166,7 +166,7 @@ public class MeasurementFile {
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			
 			for(HttpObject httpObj: httpArray){
-				if(!columnContains(sheet, httpObj.getTimestamp())){
+				//if(!columnContains(sheet, httpObj.getTimestamp())){
 					// get number or row
 					int rowNumSheet = sheet.getLastRowNum() + 1;
 					Cell cell = null;
@@ -184,7 +184,7 @@ public class MeasurementFile {
 						cell = sheetrow.createCell(2);
 						cell.setCellValue(httpObj.getTime());
 					}
-				}
+				//}
 			}
 			// =====================================================
 			// outputstream, close stream.
@@ -237,7 +237,7 @@ public class MeasurementFile {
 					XSSFSheet sheet = workbook.getSheetAt(0);
 					
 					for(PingObject pingObj: pingArray){
-						if(!columnContains(sheet, pingObj.getTimestamp())){
+						//if(!columnContains(sheet, pingObj.getTimestamp())){
 							// get number or row
 							int rowNumSheet = sheet.getLastRowNum() + 1;
 							Cell cell = null;
@@ -259,7 +259,7 @@ public class MeasurementFile {
 								cell = sheetrow.createCell(4);
 								cell.setCellValue(pingObj.getRTTmax());
 							}
-						}
+						//}
 					}
 					// =====================================================
 					// outputstream, close stream.
