@@ -61,7 +61,7 @@ public class MeasurementFile {
 		}
 	}
 	
-	public void httpParser(String textFilePath){
+	public void httpParser(String textFilePath, long initialTimestamp, long finalTimestamp){
 		String excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\http.xlsx").toString();
 		try (BufferedReader br = new BufferedReader(new FileReader(textFilePath)))
 		{
@@ -85,7 +85,7 @@ public class MeasurementFile {
 				}
 				httpArray.add(httpObj);
 			}
-			writeHttpExcel(httpArray,excelFilePath);
+			writeHttpExcel(httpArray,excelFilePath, initialTimestamp, finalTimestamp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}catch(SecurityException se){
@@ -93,7 +93,7 @@ public class MeasurementFile {
 	    }
 	}
 	
-	public void pingParser(String textFilePath){
+	public void pingParser(String textFilePath, long initialTimestamp, long finalTimestamp){
 		String excelFilePath = parentPath.resolve("dataPa2\\excelfiles\\ping.xlsx").toString();
 		try (BufferedReader br = new BufferedReader(new FileReader(textFilePath)))
 		{
@@ -104,29 +104,32 @@ public class MeasurementFile {
 				theDir.mkdir();
 			}
 			ArrayList<PingObject> pingArray= new ArrayList<PingObject>();
-			String sCurrentLine;
-			while ((sCurrentLine = br.readLine()) != null) {
+			String sCurrentLine = br.readLine();
+			while (sCurrentLine != null) {
 				PingObject pingObj = new PingObject();
 				double packetloss;
 				pingObj.setTimestamp(Long.parseLong(sCurrentLine));
 				sCurrentLine = br.readLine();
 				sCurrentLine = br.readLine();
-				sCurrentLine = br.readLine();
-				if((sCurrentLine = br.readLine()) != null){
-					packetloss = Double.parseDouble(sCurrentLine.split(" ")[6].split("%")[0])/100;
-					pingObj.setPacketloss(packetloss);
-					if(packetloss < 1.0){
-						if((sCurrentLine = br.readLine()) != null){
-							String[] rtt = sCurrentLine.split(" ")[3].split("/");
-							pingObj.setRTTmin(Double.parseDouble(rtt[0]));
-							pingObj.setRTTavg(Double.parseDouble(rtt[1]));
-							pingObj.setRTTmax(Double.parseDouble(rtt[2]));
+				if(sCurrentLine != null && sCurrentLine.equals("")){
+					sCurrentLine = br.readLine();
+					if((sCurrentLine = br.readLine()) != null){
+						packetloss = Double.parseDouble(sCurrentLine.split(" ")[6].split("%")[0])/100;
+						pingObj.setPacketloss(packetloss);
+						if(packetloss < 1.0){
+							if((sCurrentLine = br.readLine()) != null){
+								String[] rtt = sCurrentLine.split(" ")[3].split("/");
+								pingObj.setRTTmin(Double.parseDouble(rtt[0]));
+								pingObj.setRTTavg(Double.parseDouble(rtt[1]));
+								pingObj.setRTTmax(Double.parseDouble(rtt[2]));
+							}
 						}
 					}
+					sCurrentLine = br.readLine();
+					pingArray.add(pingObj);
 				}
-				pingArray.add(pingObj);
 			}
-			writePingExcel(pingArray,excelFilePath);
+			writePingExcel(pingArray,excelFilePath, initialTimestamp, finalTimestamp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}catch(SecurityException se){
@@ -134,7 +137,7 @@ public class MeasurementFile {
 	    }
 	}
 	
-	public void writeHttpExcel(ArrayList<HttpObject> httpArray, String excelFilePath){
+	public void writeHttpExcel(ArrayList<HttpObject> httpArray, String excelFilePath, long initialTimestamp, long finalTimestamp){
 		// open stream
 		try {
 			//deleting old File to avoid duplicates
@@ -169,22 +172,24 @@ public class MeasurementFile {
 			XSSFSheet sheet = workbook.getSheetAt(0);
 			
 			for(HttpObject httpObj: httpArray){
-				// get number or row
-				int rowNumSheet = sheet.getLastRowNum() + 1;
-				Cell newCell = null;
-				XSSFRow newRow = sheet.getRow(rowNumSheet);
-				if (newRow == null) {
-					newRow = sheet.createRow(rowNumSheet);
-				}
-				// update the value of cell
-				newCell = newRow.getCell(0);
-				if (newCell == null) {
-					newCell = newRow.createCell(0);
-					newCell.setCellValue(httpObj.getTimestamp());
-					newCell = newRow.createCell(1);
-					newCell.setCellValue(httpObj.getBytes());
-					newCell = newRow.createCell(2);
-					newCell.setCellValue(httpObj.getTime());
+				if(httpObj.getTimestamp() >= initialTimestamp && httpObj.getTimestamp() <= finalTimestamp){
+					// get number or row
+					int rowNumSheet = sheet.getLastRowNum() + 1;
+					Cell newCell = null;
+					XSSFRow newRow = sheet.getRow(rowNumSheet);
+					if (newRow == null) {
+						newRow = sheet.createRow(rowNumSheet);
+					}
+					// update the value of cell
+					newCell = newRow.getCell(0);
+					if (newCell == null) {
+						newCell = newRow.createCell(0);
+						newCell.setCellValue(httpObj.getTimestamp());
+						newCell = newRow.createCell(1);
+						newCell.setCellValue(httpObj.getBytes());
+						newCell = newRow.createCell(2);
+						newCell.setCellValue(httpObj.getTime());
+					}
 				}
 			}
 			// =====================================================
@@ -202,7 +207,7 @@ public class MeasurementFile {
 		}
 	}
 	
-	public void writePingExcel(ArrayList<PingObject> pingArray, String excelFilePath){
+	public void writePingExcel(ArrayList<PingObject> pingArray, String excelFilePath, long initialTimestamp, long finalTimestamp){
 		// open stream
 		try {
 			// deleting old File to avoid duplicates
@@ -241,26 +246,28 @@ public class MeasurementFile {
 			XSSFSheet sheet = workbook.getSheetAt(0);
 
 			for (PingObject pingObj : pingArray) {
-				// get number or row
-				int rowNumSheet = sheet.getLastRowNum() + 1;
-				Cell newCell = null;
-				XSSFRow Row = sheet.getRow(rowNumSheet);
-				if (Row == null) {
-					Row = sheet.createRow(rowNumSheet);
-				}
-				// update the value of cell
-				newCell = Row.getCell(0);
-				if (newCell == null) {
-					newCell = Row.createCell(0);
-					newCell.setCellValue(pingObj.getTimestamp());
-					newCell = Row.createCell(1);
-					newCell.setCellValue(pingObj.getPacketloss());
-					newCell = Row.createCell(2);
-					newCell.setCellValue(pingObj.getRTTmin());
-					newCell = Row.createCell(3);
-					newCell.setCellValue(pingObj.getRTTavg());
-					newCell = Row.createCell(4);
-					newCell.setCellValue(pingObj.getRTTmax());
+				if(pingObj.getTimestamp() >= initialTimestamp && pingObj.getTimestamp() <= finalTimestamp){
+					// get number or row
+					int rowNumSheet = sheet.getLastRowNum() + 1;
+					Cell newCell = null;
+					XSSFRow Row = sheet.getRow(rowNumSheet);
+					if (Row == null) {
+						Row = sheet.createRow(rowNumSheet);
+					}
+					// update the value of cell
+					newCell = Row.getCell(0);
+					if (newCell == null) {
+						newCell = Row.createCell(0);
+						newCell.setCellValue(pingObj.getTimestamp());
+						newCell = Row.createCell(1);
+						newCell.setCellValue(pingObj.getPacketloss());
+						newCell = Row.createCell(2);
+						newCell.setCellValue(pingObj.getRTTmin());
+						newCell = Row.createCell(3);
+						newCell.setCellValue(pingObj.getRTTavg());
+						newCell = Row.createCell(4);
+						newCell.setCellValue(pingObj.getRTTmax());
+					}
 				}
 			}
 			// =====================================================

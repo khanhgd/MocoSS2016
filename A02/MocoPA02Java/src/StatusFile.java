@@ -73,8 +73,9 @@ public class StatusFile {
 		}	
 	}
 
-	public void jsonParser(String jsonFilePath, int numFile)
+	public long jsonParser(String jsonFilePath, int numFile)
 	{	
+		long systemTime = 0;
 		try {
 			
 			//Check if Directory exists
@@ -116,7 +117,7 @@ public class StatusFile {
 			JSONObject jsonObject = (JSONObject)jsonParser.parse(reader);
 			
 			//get JsonArray
-			long systemTime 				= (long)jsonObject.get("systemTime");
+			systemTime 						= (long)jsonObject.get("systemTime");
 			long timeSinceStartup 			= (long)jsonObject.get("timeSinceStartup");
 			JSONArray neighbors				= (JSONArray)jsonObject.get("neighbors");
 			JSONArray links 				= (JSONArray)jsonObject.get("links");
@@ -213,6 +214,8 @@ public class StatusFile {
 		}catch(SecurityException se){
 			System.err.println("Unable to create directory");
 	    }
+		
+		return systemTime;
 	}
 	
 

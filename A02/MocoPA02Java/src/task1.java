@@ -55,16 +55,19 @@ public class task1 {
 		timer.schedule( new TimerTask() {
 			long initialTime = System.currentTimeMillis();
 			long totalTime = 2*60*60*1000;
-			//long totalTime = 60*1000;
+			//long totalTime = 2*60*1000;
+			
+			long intialStatus_01Timestamp = Long.MAX_VALUE;
+			long finalStatus_01Timestamp = Long.MIN_VALUE;
 		    public void run() {
 		    	if (System.currentTimeMillis() - initialTime > totalTime) {
-		    		System.out.println("============COMPLETED STATUS=============");
+		    		System.out.println("============COMPLETED STATUS DATA=============");
 		    		System.out.println("Downloading measurement data files ...");
 		      		mFiles.download("http");
 		      		mFiles.download("ping");
 		      		System.out.println("Saving measurement data ...");
-		    		mFiles.httpParser(parentPath.resolve("dataPa2\\jsonfiles\\http.txt").toString());
-		    		mFiles.pingParser(parentPath.resolve("dataPa2\\jsonfiles\\ping.txt").toString());
+		    		mFiles.httpParser(parentPath.resolve("dataPa2\\jsonfiles\\http.txt").toString(),intialStatus_01Timestamp,finalStatus_01Timestamp);
+		    		mFiles.pingParser(parentPath.resolve("dataPa2\\jsonfiles\\ping.txt").toString(),intialStatus_01Timestamp,finalStatus_01Timestamp);
 		    		System.out.println("Success update measurement data files");
 		    		System.out.println("============COMPLETED MEASUREMENT DATA=============");
 	                cancel();
@@ -82,7 +85,15 @@ public class task1 {
 	            	  for(int i=0; i<jsonFilesList.size(); i++){
 	  					Path pathFile = jsonFilesList.get(i);
 	  					int j=i+1;
-	  					sFiles.jsonParser(pathFile.toString(),j);
+	  					if(i==0){
+	  						long currentStatus_01Timestamp = sFiles.jsonParser(pathFile.toString(),j);
+	  						if(currentStatus_01Timestamp < intialStatus_01Timestamp)
+	  							intialStatus_01Timestamp = currentStatus_01Timestamp;
+	  						if(currentStatus_01Timestamp > finalStatus_01Timestamp)
+	  							finalStatus_01Timestamp = currentStatus_01Timestamp;
+	  					}else{
+	  						sFiles.jsonParser(pathFile.toString(),j);
+	  					}
 	  				}
 	  				
 	  				System.out.println("Success update status files");
