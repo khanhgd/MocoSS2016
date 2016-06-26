@@ -26,11 +26,11 @@ taskThree<-function(){
 	legend("bottom", inset=c(0,-0.3), c("Median","Mean","Quantils"), xpd = TRUE, lty=c(1,1,1),lwd=c(2,2,2),col=c("#e60047","#00e69f","#e69f00"), bty = "n",cex = 0.75, horiz=TRUE)
 	windows()	
 	par( mar=c(8, 6, 6, 2))
-	plot(x = http[,1], y=http[,3], xlab="Timestamp [ms]", ylab="Average Round Trip Time [ms]",cex.lab=1.4)
+	plot(x = ping[,1], y=ping[,4], xlab="Timestamp [ms]", ylab="Average Round Trip Time [ms]",cex.lab=1.4)
 	title(main="Round Trip Time",col.main="#484848",cex.main=2)
-	abline(h=median(http[,3]), col="#e60047", lwd=3)
-	abline(h=mean(http[,3]), col="#00e69f", lwd=3)
-	abline(h=quantile(http[,3],probs = c(0.25, 0.5, 0.75, 1)), col="#e69f00")	
+	abline(h=median(ping[,4]), col="#e60047", lwd=3)
+	abline(h=mean(ping[,4]), col="#00e69f", lwd=3)
+	abline(h=quantile(ping[,4],probs = c(0.25, 0.5, 0.75, 1)), col="#e69f00")	
 	legend("bottom", inset=c(0,-0.3), c("Median","Mean","Quantils"), xpd = TRUE, lty=c(1,1,1),lwd=c(2,2,2),col=c("#e60047","#00e69f","#e69f00"), bty = "n",cex = 0.75, horiz=TRUE)
 }
 
