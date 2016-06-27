@@ -1,8 +1,78 @@
+install.packages("GGally")
 library(xlsx)
 http <- read.xlsx("http.xlsx", sheetName="Sheet1")
 ping <- read.xlsx("ping.xlsx", sheetName="Sheet1")
+gizmo01.links <- read.xlsx("status-01.xlsx", sheetName="links")
+gizmo02.links <- read.xlsx("status-02.xlsx", sheetName="links")
+gizmo03.links <- read.xlsx("status-03.xlsx", sheetName="links")
+gizmo04.links <- read.xlsx("status-04.xlsx", sheetName="links")
+gizmo05.links <- read.xlsx("status-05.xlsx", sheetName="links")
+gizmo06.links <- read.xlsx("status-06.xlsx", sheetName="links")
+gizmo01.routes <- read.xlsx("status-01.xlsx", sheetName="routes")
+gizmo02.routes <- read.xlsx("status-02.xlsx", sheetName="routes")
+gizmo03.routes <- read.xlsx("status-03.xlsx", sheetName="routes")
+gizmo04.routes <- read.xlsx("status-04.xlsx", sheetName="routes")
+gizmo05.routes <- read.xlsx("status-05.xlsx", sheetName="routes")
+gizmo06.routes <- read.xlsx("status-06.xlsx", sheetName="routes")
+
+plotLinkQuality<-function(){
+	nodes=c("10.0.0.1","10.0.0.2","10.0.0.3","10.0.0.4","10.0.0.5","10.0.0.6")
+	windows()
+	#pdf("task1.pdf", paper="a4")
+	par(mfrow = c( 6, 6 ),oma=c(4,2, 4, 2),mar=c(1.2, 1.2, 1.2, 1.2))
+	for(i in 1:6){
+		variableName=paste("gizmo0",".links",sep=toString(i))
+		node<-eval(as.name(variableName))
+		for(j in 1:6){
+			if(i==j){
+				plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+				text(x = 0.5, y = 0.5, paste("gizmo-0",i,sep=""), cex = 1.6, col = "black")	
+			}
+			else{
+				nodePair<-subset(node[node[,3]==nodes[j],])
+				if(nrow(nodePair)!=0){
+					plot(x=nodePair[,1], y=nodePair[,5])
+				}else{
+					plot(x=c(0),y=c(0),col="white", xaxt='n', yaxt='n')
+				}
+			}
+		}
+	}
+	title(main="Link Quality vs Time",outer=T,line=1,xlab="Timestamp [ms]", ylab="Link Quality [%]",cex.main=2,col.main="#3e3e3e")
+	#dev.off()
+}
+
+plotRoutes<-function(){
+	nodes=c("10.0.0.1","10.0.0.2","10.0.0.3","10.0.0.4","10.0.0.5","10.0.0.6")
+	windows()
+	pdf("task1.pdf", paper="a4")
+	par(mfrow = c( 6, 6 ),oma=c(4,2, 4, 2),mar=c(1.2, 1.2, 1.2, 1.2))
+	for(i in 1:6){
+		variableName=paste("gizmo0",".routes",sep=toString(i))
+		node<-eval(as.name(variableName))
+		for(j in 1:6){
+			if(i==j){
+				plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+				text(x = 0.5, y = 0.5, paste("gizmo-0",i,sep=""), cex = 1.6, col = "black")	
+			}
+			else{
+				nodePair<-subset(node[node[,2]==nodes[j],])
+				if(nrow(nodePair)!=0){
+					plot(x=nodePair[,1], y=substring(nodePair[,4],8), yaxt='n')
+					axis(2, at=c(1,2,3,4,5,6), labels=c("g-01","g-02","g-03","g-04","g-05","g-06"))
+				}else{
+					plot(x=c(0),y=c(0),col="white", xaxt='n', yaxt='n')
+				}
+			}
+		}
+	}
+	title(main="Gateways vs Time",outer=T,line=1,xlab="Timestamp [ms]", ylab="Gateway [id]",cex.main=2,col.main="#3e3e3e")
+	dev.off()
+}
 
 taskOne<-function(){
+	plotLinkQuality()
+	plotRoutes()	
 }
 
 taskTwo<-function(){
