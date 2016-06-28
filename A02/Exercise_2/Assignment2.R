@@ -1,7 +1,14 @@
-install.packages("GGally")
+install.packages("igraph")
 library(xlsx)
+library(igraph)
 http <- read.xlsx("http.xlsx", sheetName="Sheet1")
 ping <- read.xlsx("ping.xlsx", sheetName="Sheet1")
+gizmo01.status <- read.xlsx("status-01.xlsx", sheetName="status")
+gizmo02.status <- read.xlsx("status-02.xlsx", sheetName="status")
+gizmo03.status <- read.xlsx("status-03.xlsx", sheetName="status")
+gizmo04.status <- read.xlsx("status-04.xlsx", sheetName="status")
+gizmo05.status <- read.xlsx("status-05.xlsx", sheetName="status")
+gizmo06.status <- read.xlsx("status-06.xlsx", sheetName="status")
 gizmo01.links <- read.xlsx("status-01.xlsx", sheetName="links")
 gizmo02.links <- read.xlsx("status-02.xlsx", sheetName="links")
 gizmo03.links <- read.xlsx("status-03.xlsx", sheetName="links")
@@ -14,6 +21,39 @@ gizmo03.routes <- read.xlsx("status-03.xlsx", sheetName="routes")
 gizmo04.routes <- read.xlsx("status-04.xlsx", sheetName="routes")
 gizmo05.routes <- read.xlsx("status-05.xlsx", sheetName="routes")
 gizmo06.routes <- read.xlsx("status-06.xlsx", sheetName="routes")
+
+plotTopology<-function(){
+	percentage=c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0)
+	#windows()
+	pdf("task1.pdf", paper="A4")
+	par( mfrow = c( 3, 2 ),oma=c(0,0,4,0),mar=c(1, 1, 1, 1))
+	for(i in 1:10){
+		if(i==7 ){
+			title(main="Network Topology",col.main="#484848",outer=T)
+			#windows()
+			par( mfrow = c( 3, 2 ),oma=c(2,2,4,2),mar=c(1, 1, 1, 1))
+		}	
+		g1Timestamp.per = gizmo01.status[floor(nrow(gizmo01.status)*percentage[i]),1]
+		g2Timestamp.per = gizmo02.status[floor(nrow(gizmo02.status)*percentage[i]),1]
+		g3Timestamp.per = gizmo03.status[floor(nrow(gizmo03.status)*percentage[i]),1]
+		g4Timestamp.per = gizmo04.status[floor(nrow(gizmo04.status)*percentage[i]),1]
+		g5Timestamp.per = gizmo05.status[floor(nrow(gizmo05.status)*percentage[i]),1]
+		g6Timestamp.per = gizmo06.status[floor(nrow(gizmo06.status)*percentage[i]),1]
+		g1negihbors = subset(gizmo01.links[gizmo01.links[,1]==g1Timestamp.per,])
+		g2negihbors = subset(gizmo02.links[gizmo02.links[,1]==g2Timestamp.per,])
+		g3negihbors = subset(gizmo03.links[gizmo03.links[,1]==g3Timestamp.per,])
+		g4negihbors = subset(gizmo04.links[gizmo04.links[,1]==g4Timestamp.per,])
+		g5negihbors = subset(gizmo05.links[gizmo05.links[,1]==g5Timestamp.per,])
+		g6negihbors = subset(gizmo06.links[gizmo06.links[,1]==g6Timestamp.per,])
+		data.per<-rbind(g1negihbors, g2negihbors, g3negihbors, g4negihbors, g5negihbors, g6negihbors)
+		net<-graph_from_data_frame(data.per[,2:3], directed = TRUE)
+		plot(net,edge.arrow.size=0.5, vertex.color="#ffc135",vertex.frame.color="#ffc135",vertex.label.color="#2f2f2f", vertex.label.cex=1.2)
+		t<-100*percentage[i]
+		title(main=paste(t,"% of the time",sep=""),col.main="#484848")
+	}
+	title(main="Network Topology",col.main="#484848",outer=T)
+	dev.off()
+}
 
 plotLinkQuality<-function(){
 	nodes=c("10.0.0.1","10.0.0.2","10.0.0.3","10.0.0.4","10.0.0.5","10.0.0.6")
